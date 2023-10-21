@@ -1,0 +1,23 @@
+﻿[
+  {
+    "website": "https://www.allrecipes.com/recipes-a-z-6735880",
+    "recipe_link_pattern" : {
+      "tag_name": "a",  
+      "required_attrs": {
+        "class": "link-list__link type--dog-bold type--dog-link"
+      }
+    },
+    "ingredient_list_pattern" : {
+      "tag_name": "span",
+      "required_attrs" : {
+        "data-ingredient-name": "true"
+      }
+    },
+    "image_pattern" : {
+      "tag_name": "img",
+      "required_attrs" : {
+        "class": "primary-image__image mntl-primary-image--blurry loaded"
+      }
+    }
+  }
+]
