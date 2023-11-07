@@ -10,6 +10,13 @@ public struct WebsitePatternRecord
         get;
         set;
     }
+    
+    [JsonPropertyName("recipe_category_pattern")]
+    public TagPattern RecipeCategoryPattern
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("recipe_link_pattern")]
     public TagPattern LinkPattern
@@ -24,7 +31,14 @@ public struct WebsitePatternRecord
         get;
         set;
     }
-
+    
+    [JsonPropertyName("title_pattern")]
+    public TagPattern TitlePattern
+    {
+        get;
+        set;
+    }
+    
     [JsonPropertyName("image_pattern")]
     public TagPattern ImagePattern
     {

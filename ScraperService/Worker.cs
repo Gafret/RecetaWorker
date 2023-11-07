@@ -2,6 +2,7 @@ using System.Data;
 using Npgsql;
 using RecipeFetcherService.DbManagement;
 using RecipeFetcherService.DbManagement.DataClasses;
+using RecipeFetcherService.DbManagement.Interfaces;
 using RecipeFetcherService.DbManagement.Repositories;
 
 namespace RecipeFetcherService;

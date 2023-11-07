@@ -1,10 +1,18 @@
 ﻿[
   {
     "website": "https://www.allrecipes.com/recipes-a-z-6735880",
+    
+    "recipe_category_pattern": {
+      "tag_name": "a",
+      "required_attrs": {
+        "class": "link-list__link type--dog-bold type--dog-link"
+      }
+    },
+    
     "recipe_link_pattern" : {
       "tag_name": "a",  
       "required_attrs": {
-        "class": "link-list__link type--dog-bold type--dog-link"
+        "class": "comp mntl-card-list-items mntl-document-card mntl-card card card--no-image"
       }
     },
     "ingredient_list_pattern" : {
@@ -13,10 +21,17 @@
         "data-ingredient-name": "true"
       }
     },
+    
+    "title_pattern": {
+      "tag_name": "h1",
+      "required_attrs": {
+        "class": "comp type--lion article-heading mntl-text-block"
+      }
+    },
     "image_pattern" : {
       "tag_name": "img",
       "required_attrs" : {
-        "class": "primary-image__image mntl-primary-image--blurry loaded"
+        "class": " primary-image__image mntl-primary-image--blurry"
       }
     }
   }
