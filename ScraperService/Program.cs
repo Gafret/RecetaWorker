@@ -1,10 +1,12 @@
+using System.Data;
+using Npgsql;
 using RecipeFetcherService;
 using RecipeFetcherService.Scraper;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services => { services.AddHostedService<Worker>(); })
-    .Build();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+builder.Services.Configure<DbOptions>(
+    builder.Configuration.GetSection(DbOptions.ConnectionStrings));
+builder.Services.AddHostedService<Worker>();
 
-
-
+IHost host = builder.Build();
 host.Run();

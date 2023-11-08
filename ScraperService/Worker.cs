@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using RecipeFetcherService.DbManagement;
 using RecipeFetcherService.DbManagement.DataClasses;
@@ -13,8 +14,10 @@ public class Worker : BackgroundService
     private readonly IRepository<Recipe> _recipeRepository;
     private readonly IRepository<Ingredient> _ingredientRepository;
     
-    public Worker(ILogger<Worker> logger, IDbConnection connection)
+    public Worker(ILogger<Worker> logger, IOptions<DbOptions> dbOptions)
     {
+        IDbConnection connection = new NpgsqlConnection(dbOptions.Value.Connection);
+        
         _logger = logger;
         _recipeRepository = new RecipeRepository(connection);
         _ingredientRepository = new IngredientRepository(connection);
