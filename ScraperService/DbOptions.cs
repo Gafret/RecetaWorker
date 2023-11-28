@@ -3,7 +3,7 @@
 public class DbOptions
 {
     public const string ConnectionStrings = "ConnectionStrings";
-    public string Connection
+    public string PostgreSqlTest
     {
         get;
         set;
