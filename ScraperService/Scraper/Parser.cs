@@ -10,8 +10,6 @@ namespace RecipeFetcherService.Scraper;
 
 public class Parser : ParserBase
 {
-    // TODO: refactor
-
     public Parser(
         IRecipeRepository<Recipe, Ingredient> recipeRepo,
         IIngredientRepository<Ingredient, Recipe> ingredientRepo,
@@ -45,7 +43,7 @@ public class Parser : ParserBase
         return element.GetAttributeValue(attrName, null);
     }
 
-    private (List<HtmlNode>, HtmlNode, HtmlNode) GetRecipeAttrs(HtmlDocument recipePage, WebsitePatternRecord pattern)
+    private (List<HtmlNode>?, HtmlNode?, HtmlNode?) GetRecipeAttrs(HtmlDocument recipePage, WebsitePatternRecord pattern)
     {
         var ingredientElements = GetPageAttrs(recipePage, pattern.IngredientsPattern);
         var titleElement = GetPageAttrs(recipePage, pattern.TitlePattern)?.FirstOrDefault();
@@ -75,7 +73,7 @@ public class Parser : ParserBase
     private IEnumerable<int> AddIngredientsToDb(IEnumerable<Ingredient> ingredients)
     {
         HashSet<int> ingredientIds = new HashSet<int>();
-        int id = 0;
+        int id;
         foreach (var ingredient in ingredients)
         {
             try
@@ -86,6 +84,7 @@ public class Parser : ParserBase
             {
                 if (exception.ConstraintName == "disallow_duplicate_ingrs")
                 {
+                    // not null because triggers only where duplicates appear
                     id = _ingredientRepo.GetByName(ingredient.Name).IngredientId;
                 }
                 else
@@ -112,6 +111,7 @@ public class Parser : ParserBase
             if (exception.ConstraintName == "disallow_duplicate_urls" ||
                 exception.ConstraintName == "recipes_title_key")
             {
+                // not null because triggers only if there is duplication error
                 id = _recipeRepo.GetByTitle(recipe.Title).RecipeId;
             }
             else throw;
@@ -144,14 +144,18 @@ public class Parser : ParserBase
     private async Task ParseRecipe(string recipeUrl, WebsitePatternRecord pattern)
     {
         HtmlDocument recipePage = await GetPage(recipeUrl);
+        
         var (ingredientElements, 
             titleElement, 
             imageUrlElement) = GetRecipeAttrs(recipePage, pattern);
-        
+
+        if (ingredientElements is null ||
+            titleElement is null) 
+            return;
 
         List<Ingredient> ingredients = MapToIngredients(ingredientElements);
         string title = GetText(titleElement);
-        string imageUrl = null;
+        string? imageUrl = null; // not all recipes have an image to them
         if(imageUrlElement is not null) 
             imageUrl = GetElementAttr(imageUrlElement, "src");
 
@@ -165,21 +169,6 @@ public class Parser : ParserBase
         AddFullEntryToDb(recipe, ingredients);
     }
     
-    private async Task ParseWebsite(WebsitePatternRecord pattern)
-    {
-        HtmlDocument pageWithCategories = await GetPage(pattern.Website);
-        List<HtmlNode>? categories = GetPageAttrs(pageWithCategories, pattern.RecipeCategoryPattern);
-        if(categories is null)
-            return;
-
-        foreach (var category in categories)
-        {
-            string categoryPageUrl = category.GetAttributeValue("href", null);
-            if(categoryPageUrl is null) continue;
-            await ParseCategory(categoryPageUrl, pattern);
-        }
-    }
-    
     private async Task ParseCategory(string categoryPageUrl, WebsitePatternRecord pattern)
     {
         HtmlDocument categoryPage = await GetPage(categoryPageUrl);
@@ -191,11 +180,34 @@ public class Parser : ParserBase
         foreach (var recipeLink in recipeLinks)
         {
             string recipeUrl = recipeLink.GetAttributeValue("href", null);
-            if (recipeUrl is null || recipeUrl.Contains("/article/") || recipeUrl.Contains("/gallery/")) continue;
+            if (recipeUrl is null) continue;
             await ParseRecipe(recipeUrl, pattern);
         }
     }
+    
+    private async Task ParseWebsite(WebsitePatternRecord pattern)
+    {
+        HtmlDocument mainPage = await GetPage(pattern.Website);
+        List<HtmlNode>? categories = GetPageAttrs(mainPage, pattern.RecipeCategoryPattern);
 
+        if (categories is null)
+        {
+            // In case if there is no dedicated page with all recipe categories
+            // on the website, get only the recipes from the root page (pattern.Website)
+            await ParseCategory(pattern.Website, pattern);
+        }
+        else
+        {
+            foreach (var category in categories)
+            {
+                string categoryPageUrl = category.GetAttributeValue("href", null);
+                if(categoryPageUrl is null) continue;
+                await ParseCategory(categoryPageUrl, pattern);
+            }
+        }
+    }
+
+    
     public override async Task Parse(string pathToPatterns)
     {
         var patterns = GetPatternsForRecipes(pathToPatterns);
