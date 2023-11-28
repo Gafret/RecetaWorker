@@ -4,8 +4,8 @@ using RecipeFetcherService.DbManagement.DataClasses;
 using RecipeFetcherService.DbManagement.Interfaces;
 
 namespace RecipeFetcherService.DbManagement.Repositories;
-
-public class IngredientRepository : IRepository<Ingredient>
+// TODO Recipe to RecipeBase, same to Ingredient
+public class IngredientRepository : IIngredientRepository<Ingredient, Recipe>
 {
     private readonly IDbConnection _dbConnection;
     public IngredientRepository(IDbConnection  connection)
@@ -15,27 +15,27 @@ public class IngredientRepository : IRepository<Ingredient>
     
     public async Task<IEnumerable<Ingredient>> GetAllAsync()
     {
-        IEnumerable<Ingredient> ingredients = await _dbConnection.QueryAsync<Ingredient>("SELECT ingredient_id, name FROM ingredients");
+        IEnumerable<Ingredient> ingredients = await _dbConnection.QueryAsync<Ingredient>("SELECT * FROM ingredients");
         return ingredients;
     }
     
     public IEnumerable<Ingredient> GetAll()
     {
-        IEnumerable<Ingredient> ingredients = _dbConnection.Query<Ingredient>("SELECT ingredient_id, name FROM ingredients");
+        IEnumerable<Ingredient> ingredients = _dbConnection.Query<Ingredient>("SELECT * FROM ingredients");
         return ingredients;
     }
     
     public Ingredient? GetByName(string name)
     {
         return _dbConnection.Query<Ingredient>(
-            "SELECT ingredient_id, name FROM ingredients WHERE name = @Name",
+            "SELECT * FROM ingredients WHERE name = @Name",
             new {Name = name}).SingleOrDefault();
     }
     
     public async Task<Ingredient?> GetByNameAsync(string name)
     {
         return  (await _dbConnection.QueryAsync<Ingredient>(
-            "SELECT ingredient_id, name FROM ingredients WHERE name = @Name",
+            "SELECT * FROM ingredients WHERE name = @Name",
             new {Name = name})).SingleOrDefault();
     }
 

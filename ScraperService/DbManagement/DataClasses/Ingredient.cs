@@ -1,26 +1,8 @@
-﻿namespace RecipeFetcherService.DbManagement.DataClasses;
+﻿using RecipeFetcherService.DbManagement.DataClasses.Abstract;
 
-public class Ingredient : IEquatable<Ingredient>
+namespace RecipeFetcherService.DbManagement.DataClasses;
+
+public class Ingredient : IngredientBase
 {
-    public int IngredientId
-    {
-        get;
-        set;
-    }
     
-    public string Name
-    {
-        get;
-        set;
-    }
-
-    public bool Equals(Ingredient? other)
-    {
-        return Name == other.Name;
-    }
-
-    public override string ToString()
-    {
-        return Name;
-    }
 }

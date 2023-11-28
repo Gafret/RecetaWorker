@@ -8,7 +8,8 @@ using RecipeFetcherService.DbManagement.Interfaces;
 
 namespace RecipeFetcherService.DbManagement.Repositories;
 
-public class RecipeRepository : IRepository<Recipe>
+// TODO Recipe to RecipeBase, same to Ingredient
+public class RecipeRepository : IRecipeRepository<Recipe, Ingredient>
 {
     private readonly IDbConnection _dbConnection;
 

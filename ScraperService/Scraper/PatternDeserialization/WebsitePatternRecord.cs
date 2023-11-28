@@ -2,6 +2,8 @@
 
 namespace RecipeFetcherService.Scraper.PatternDeserialization;
 
+
+// TODO: should be child class of patter record abstract class
 public struct WebsitePatternRecord
 {
     [JsonPropertyName("website")]

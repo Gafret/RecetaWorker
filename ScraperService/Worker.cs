@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using RecipeFetcherService.DbManagement.DataClasses;
+using RecipeFetcherService.DbManagement.DataClasses.Abstract;
 using RecipeFetcherService.DbManagement.Interfaces;
 using RecipeFetcherService.DbManagement.Repositories;
 using RecipeFetcherService.Scraper;
@@ -31,7 +32,7 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         ParserBase parser = new Parser(_recipeRepository, _ingredientRepository, new TagPatternReader());
-        await parser.Parse("./tag_pattern.json");
+        await parser.Parse("./SearchPatterns/tag_pattern.json");
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

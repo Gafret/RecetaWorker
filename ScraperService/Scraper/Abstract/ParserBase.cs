@@ -1,4 +1,5 @@
 ﻿using RecipeFetcherService.DbManagement.DataClasses;
+using RecipeFetcherService.DbManagement.DataClasses.Abstract;
 using RecipeFetcherService.DbManagement.Interfaces;
 using RecipeFetcherService.Scraper.Interfaces;
 using RecipeFetcherService.Scraper.PatternDeserialization;

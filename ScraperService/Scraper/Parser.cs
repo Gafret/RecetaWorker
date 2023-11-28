@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Npgsql;
 using RecipeFetcherService.DbManagement.DataClasses;
+using RecipeFetcherService.DbManagement.DataClasses.Abstract;
 using RecipeFetcherService.DbManagement.Interfaces;
 using RecipeFetcherService.Scraper.Abstract;
 using RecipeFetcherService.Scraper.Interfaces;

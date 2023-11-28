@@ -28,6 +28,7 @@
         "class": "comp type--lion article-heading mntl-text-block"
       }
     },
+    
     "image_pattern" : {
       "tag_name": "img",
       "required_attrs" : {
